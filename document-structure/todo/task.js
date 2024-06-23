@@ -1,33 +1,29 @@
-const tasksInput = document.getElementById('task__input');
-const tasksAddButton = document.getElementById('tasks__add');
+// task.js
+const taskInput = document.getElementById('task__input');
 const tasksList = document.getElementById('tasks__list');
+const tasksForm = document.getElementById('tasks__form');
+let tasks = [];
 
-function taskAdd(event) {
+// добавление новой задачи
+tasksForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    if (tasksInput.value) {
-        const newTaskHTML = `
-            <div class="task">
-                <div class="task__title">
-                    ${tasksInput.value}
-                </div>
-                <a href="#" class="task__remove">&times;</a>
-            </div>
-        `;
-        tasksList.insertAdjacentHTML('beforeEnd', newTaskHTML);
-        tasksInput.value = '';
-    }
-}
-
-tasksAddButton.addEventListener('click', taskAdd);
-tasksInput.addEventListener('keydown', event => {
-    if (event.keyCode === 13) {
-        taskAdd();
+    const taskText = taskInput.value.trim();
+    if (taskText !== '') {
+        const newTask = document.createElement('div');
+        newTask.className = 'task';
+        newTask.innerHTML = `
+          <div class="task__title">${taskText}</div>
+          <a href="#" class="task__remove">×</a>`;
+        tasksList.appendChild(newTask);
+        tasks.push(taskText);
+        taskInput.value = '';
     }
 });
 
-document.addEventListener('click', event => {
-    const target = event.target;
-    if (target.classList.contains('task__remove')) {
-        target.parentNode.remove();
+// удаление задачи
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('task__remove')) {
+        const taskToRemove = event.target.parentNode.parentNode.removeChild(event.target.parentNode);
+        tasks = tasks.filter((task) => task !== event.target.parentNode.querySelector('.task__title').textContent.trim());
     }
 });
